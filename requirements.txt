@@ -1,3 +1,4 @@
 gym-super-mario-bros
 tensordict
 torchrl
+torchvision
