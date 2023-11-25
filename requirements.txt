@@ -1,4 +1,6 @@
 gym-super-mario-bros
+wheel
 tensordict
 torchrl
 torchvision
+matplotlib
