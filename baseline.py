@@ -59,7 +59,7 @@ Other Information:
 
 Define additional parameters for future use:
 """
-ACTION_SPACE = [
+OLD_ACTION_SPACE = [
 
   # Singular Buttons
   ["right"],        # WALK to the RIGHT
@@ -75,6 +75,17 @@ ACTION_SPACE = [
   # Speed Up
   ["right", "B"],        # RUN to the RIGHT
   ["left", "B"],         # RUN to the LEFT
+
+]
+
+ACTION_SPACE = [
+
+  # Singular Buttons
+  ["right"],        # WALK to the RIGHT
+  ["left"],         # WALK to the LEFT
+  ["down"],         # CROUCH / ENTER PIPE
+  ["B"],            # SPECIAL in place
+  ["A"],            # JUMP in place
 
 ]
 
@@ -245,15 +256,22 @@ class Mario:
     """
     
     """
-    def __init__(self, state_dim, action_dim, save_dir):
+    def __init__(self, state_dim, action_dim, save_dir, load_chkpt = None):
         self.state_dim = state_dim
         self.action_dim = action_dim
         self.save_dir = save_dir
 
-        self.device = "cuda" if torch.cuda.is_available() else "cpu"
+        # Loading Model from Checkpoint
+        self.chkpt_fpath = load_chkpt
+
+        cuda_ = "cuda:0"
+        self.device = torch.device(cuda_ if torch.cuda.is_available() else "cpu")
+        #self.device = "cuda" if torch.cuda.is_available() else "cpu"
 
         # Define memory for RECALL and LEARN
         self.memory = TensorDictReplayBuffer(storage=LazyMemmapStorage(100000, device=torch.device("cpu")))
+        # self.memory = TensorDictReplayBuffer(storage=LazyMemmapStorage(100000, device=self.device))
+        
         self.batch_size = 32
 
         # Define variables for Mario's DNN learning
@@ -264,6 +282,12 @@ class Mario:
         self.exploration_rate_decay = 0.99999975
         self.exploration_rate_min = 0.1
         self.curr_step = 0
+
+        # Load previous model if passed in
+        if not self.chkpt_fpath is None:
+            checkpoint = torch.load(self.chkpt_fpath)
+            self.net.load_state_dict(checkpoint['model'])
+            self.exploration_rate = checkpoint['exploration_rate']
 
         self.save_every = 5e5  # num. of experiences between saving Mario Net
 
@@ -276,6 +300,8 @@ class Mario:
         self.burnin = 1e4  # min. experiences before training
         self.learn_every = 3  # no. of experiences between updates to Q_online
         self.sync_every = 1e4  # no. of experiences between Q_target & Q_online sync
+
+        
 
     def act(self, state):
         """
@@ -384,11 +410,21 @@ class Mario:
             self.save_dir / f"mario_net_{int(self.curr_step // self.save_every)}.chkpt"
         )
         torch.save(
-            dict(model=self.net.state_dict(), exploration_rate=self.exploration_rate),
+            dict(model=self.net.state_dict(), 
+                 exploration_rate=self.exploration_rate
+                ),
             save_path,
         )
         print(f"MarioNet saved to {save_path} at step {self.curr_step}")
 
+    def load(self, checkpoint_fpath, model, optimizer):
+        """
+        Load model from checkpoint
+        """
+        checkpoint = torch.load(checkpoint_fpath)
+        model.load_state_dict(checkpoint['state_dict'])
+        optimizer.load_state_dict(checkpoint['optimizer'])          
+        return model, optimizer, checkpoint['epoch']
 
     def learn(self):
         if self.curr_step % self.sync_every == 0:
@@ -575,6 +611,7 @@ save_dir = Path("checkpoints") / datetime.datetime.now().strftime("%Y-%m-%dT%H-%
 save_dir.mkdir(parents=True)
 
 mario = Mario(state_dim=(4, 84, 84), action_dim=env.action_space.n, save_dir=save_dir)
+# mario = Mario(state_dim=(4, 84, 84), action_dim=env.action_space.n, save_dir=save_dir, load_chkpt="checkpoints/first_run_FULL_action_space/mario_net_6.chkpt")
 
 logger = MetricLogger(save_dir)
 
