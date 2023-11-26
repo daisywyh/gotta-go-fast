@@ -4,3 +4,4 @@ tensordict
 torchrl
 torchvision
 matplotlib
+torch
