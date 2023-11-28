@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH --job-name=test_mario
-#SBATCH --time=180:00
+#SBATCH --time=360:00
 #SBATCH -p gpu
 #SBATCH -G 16
 #SBATCH -c 64
