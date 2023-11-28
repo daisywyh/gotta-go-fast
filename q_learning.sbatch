@@ -3,7 +3,7 @@
 #SBATCH --time=360:00
 #SBATCH -p gpu
 #SBATCH -G 16
-#SBATCH -c 64
+#SBATCH -c 32
 #SBATCH --mem=24GB
 
 # load all of the needed packages
