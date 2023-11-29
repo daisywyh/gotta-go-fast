@@ -123,7 +123,7 @@ Currently limit the action-space to
 - 1. jump right (right + jump)
 """
 # env = JoypadSpace(env, [["right"], ["right", "A"]])
-env = JoypadSpace(env, ACTION_SPACE)
+env = JoypadSpace(env, OLD_ACTION_SPACE)
 
 """
 Reset the Environment to Initialize
@@ -500,6 +500,7 @@ class MarioNet(nn.Module):
 class MetricLogger:
     def __init__(self, save_dir):
         self.save_log = save_dir / "log"
+        self.save_data = save_dir / "data"
         with open(self.save_log, "w") as f:
             f.write(
                 f"{'Episode':>8}{'Step':>8}{'Epsilon':>10}{'MeanReward':>15}"
@@ -593,6 +594,14 @@ class MetricLogger:
                 f"{datetime.datetime.now().strftime('%Y-%m-%dT%H:%M:%S'):>20}\n"
             )
 
+        with open(self.save_data, "w") as file:
+            file.write(
+                f"Last 100 Rewards: {self.ep_rewards[-100:]}\n"
+                f"Last 100 Episode Lengths: {self.ep_lengths[-100:]}\n"
+                f"Last 100 Loss Averages: {self.ep_avg_losses[-100:]}\n"
+                f"Last 100 Q Values: {self.ep_avg_qs[-100:]}\n"
+            )
+
         for metric in ["ep_lengths", "ep_avg_losses", "ep_avg_qs", "ep_rewards"]:
             plt.clf()
             plt.plot(getattr(self, f"moving_avg_{metric}"), label=f"moving_avg_{metric}")
@@ -615,8 +624,8 @@ mario = Mario(state_dim=(4, 84, 84), action_dim=env.action_space.n, save_dir=sav
 
 logger = MetricLogger(save_dir)
 
-episodes = 8000
-for e in range(episodes):
+episodes = 20000
+for e in range(3900, episodes):
 
     state = env.reset()
 
