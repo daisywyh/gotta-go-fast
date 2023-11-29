@@ -1,9 +1,7 @@
 #!/bin/bash
-#SBATCH --job-name=test_mario_smaller
+#SBATCH --job-name=mario_cpu
 #SBATCH --time=360:00
-#SBATCH -p gpu
-#SBATCH -G 4
-#SBATCH -c 4
+#SBATCH -c 32
 #SBATCH --mem=8GB
 
 # load all of the needed packages
