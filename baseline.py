@@ -610,8 +610,8 @@ print()
 save_dir = Path("checkpoints") / datetime.datetime.now().strftime("%Y-%m-%dT%H-%M-%S")
 save_dir.mkdir(parents=True)
 
-mario = Mario(state_dim=(4, 84, 84), action_dim=env.action_space.n, save_dir=save_dir)
-# mario = Mario(state_dim=(4, 84, 84), action_dim=env.action_space.n, save_dir=save_dir, load_chkpt="checkpoints/first_run_FULL_action_space/mario_net_6.chkpt")
+# mario = Mario(state_dim=(4, 84, 84), action_dim=env.action_space.n, save_dir=save_dir)
+mario = Mario(state_dim=(4, 84, 84), action_dim=env.action_space.n, save_dir=save_dir, load_chkpt="checkpoints/first_run_FULL_action_space/mario_net_6.chkpt")
 
 logger = MetricLogger(save_dir)
 
