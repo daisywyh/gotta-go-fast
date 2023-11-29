@@ -2,8 +2,8 @@
 #SBATCH --job-name=test_mario_smaller
 #SBATCH --time=360:00
 #SBATCH -p gpu
-#SBATCH -G 8
-#SBATCH -c 8
+#SBATCH -G 4
+#SBATCH -c 4
 #SBATCH --mem=8GB
 
 # load all of the needed packages
