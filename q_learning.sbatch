@@ -1,10 +1,10 @@
 #!/bin/bash
-#SBATCH --job-name=test_mario
+#SBATCH --job-name=test_mario_smaller
 #SBATCH --time=360:00
 #SBATCH -p gpu
-#SBATCH -G 16
-#SBATCH -c 32
-#SBATCH --mem=24GB
+#SBATCH -G 8
+#SBATCH -c 8
+#SBATCH --mem=8GB
 
 # load all of the needed packages
 module load system openssl
