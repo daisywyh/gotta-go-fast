@@ -1,8 +1,8 @@
 #!/bin/bash
 #SBATCH --job-name=mario_cpu
 #SBATCH --time=360:00
-#SBATCH -c 32
-#SBATCH --mem=8GB
+#SBATCH -c 128
+#SBATCH --mem=16GB
 
 # load all of the needed packages
 module load system openssl
