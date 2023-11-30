@@ -1,10 +1,10 @@
 #!/bin/bash
 #SBATCH --job-name=checkpoint_mario
-#SBATCH --time=360:00
+#SBATCH --time=600:00
 #SBATCH -p gpu
 #SBATCH -G 4
-#SBATCH -c 5
-#SBATCH --mem=8GB
+#SBATCH -c 8
+#SBATCH --mem=64GB
 
 # load all of the needed packages
 module load system openssl
