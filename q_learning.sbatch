@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH --job-name=checkpoint_mario
-#SBATCH --time=600:00
+#SBATCH --time=90:00
 #SBATCH -p gpu
 #SBATCH -G 4
 #SBATCH -c 10
